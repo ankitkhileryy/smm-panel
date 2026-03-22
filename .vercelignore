@@ -1,0 +1,23 @@
+# Deployment artifacts
+deploy.tar.gz
+update.tar
+deploy_log.txt
+smm-aws.pem
+server.pem
+
+# Local env files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Node modules & build
+node_modules
+.next
+out
+
+# Others
+*.ps1
+nginx-smm.conf
+*.pem
+*.log

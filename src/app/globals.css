@@ -1,0 +1,176 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-inter);
+}
+
+:root {
+  /* True Deep Red - Professional & Premium */
+  --bg-primary: #050505;
+  --bg-secondary: #0a0a0c;
+  --bg-sidebar: #08080a;
+  --accent-red: #b91c1c;
+  --accent-red-bright: #dc2626;
+  --accent-red-dim: #7f1d1d;
+  --accent-red-hover: #991b1b;
+  --accent-red-glow: rgba(185, 28, 28, 0.15);
+  --text-main: #f8fafc;
+  --text-muted: #64748b;
+  --card-bg: #0c0c0e;
+  --card-border: #1a1a1e;
+  --card-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.7);
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
+}
+
+/* Base Animations - Less "AI generated", more "Engineered" */
+@keyframes subtle-reveal {
+  0% { opacity: 0; filter: blur(4px); transform: translateY(5px); }
+  100% { opacity: 1; filter: blur(0); transform: translateY(0); }
+}
+
+@keyframes scan-line {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+.animate-reveal {
+  animation: subtle-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Premium Card System */
+.premium-card {
+  background: var(--card-bg);
+  border-radius: 20px;
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.premium-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(185, 28, 28, 0.03) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.premium-card:hover {
+  border-color: rgba(185, 28, 28, 0.3);
+  box-shadow: 0 8px 30px -10px rgba(0, 0, 0, 0.8), 0 0 15px rgba(185, 28, 28, 0.05);
+}
+
+.premium-card:hover::before {
+  opacity: 1;
+}
+
+/* Glass panel - Refined */
+.glass-panel {
+  background: rgba(10, 10, 12, 0.8);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* Custom Scrollbar - Stealth Mode */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1a1a1e;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-red-dim);
+}
+
+/* Global Button Refinement */
+.btn-premium {
+  background-color: var(--accent-red);
+  color: white;
+  font-weight: 800;
+  border-radius: 14px;
+  padding: 14px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 11px;
+}
+
+.btn-premium:hover {
+  background-color: var(--accent-red-bright);
+  box-shadow: 0 4px 20px rgba(185, 28, 28, 0.2);
+  transform: translateY(-1px);
+}
+
+.btn-premium:active {
+  transform: scale(0.97);
+}
+
+/* Input Styles - Sharp & Clean */
+input,
+select,
+textarea {
+  background-color: #0c0c0e;
+  border: 1px solid #1a1a1e;
+  color: #f8fafc;
+  border-radius: 14px;
+  padding: 14px 18px;
+  outline: none;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--accent-red-dim);
+  background-color: #0f0f11;
+}
+
+/* Utility Animations */
+.reveal-delay-1 { animation-delay: 0.1s; }
+.reveal-delay-2 { animation-delay: 0.2s; }
+.reveal-delay-3 { animation-delay: 0.3s; }
+
+/* Text Selection Color */
+::selection {
+  background-color: rgba(185, 28, 28, 0.4);
+  color: #fff;
+}
+
+/* Accessibility & Clean Transitions */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-duration: 0.2s;
+}
