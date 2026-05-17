@@ -1,7 +1,7 @@
 async function check() {
     console.log("Checking API without headers...");
-    const PROVIDER_URL = "https://mysmmapi.com/api/v2";
-    const PROVIDER_KEY = "813fa1be383e64d54f888b1ca6854cb39acb35c7";
+    const PROVIDER_URL = "";
+    const PROVIDER_KEY = "";
 
     const formData = new URLSearchParams();
     formData.append("key", PROVIDER_KEY);
