@@ -26,7 +26,7 @@ export async function GET(req: Request) {
             const token = cookieHeader?.split("auth_token=")[1]?.split(";")[0];
 
             if (!token) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-            const secret = process.env.JWT_SECRET || "fallback_secret_for_dev_only";
+            const secret = process.env.JWT_SECRET!;
             const decoded: any = jwt.verify(token, secret);
             const user = await User.findById(decoded.userId);
             if (!user) return NextResponse.json({ message: "User not found" }, { status: 404 });

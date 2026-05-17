@@ -3,7 +3,7 @@ import dbConnect from "@/lib/mongoose";
 import Ticket from "@/models/Ticket";
 import jwt from "jsonwebtoken";
 
-const secret = process.env.JWT_SECRET || "fallback_secret_for_dev_only";
+const secret = process.env.JWT_SECRET!;
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {

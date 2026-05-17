@@ -7,6 +7,9 @@ export interface ISettings extends mongoose.Document {
     broadcastMessage?: string;
     themeColor: string; // Hex color for the theme
     lastSyncAt: Date | null;
+    phonepeMerchantId?: string;
+    phonepeSaltKey?: string;
+    phonepeSaltIndex?: string;
 }
 
 const SettingsSchema = new mongoose.Schema<ISettings>(
@@ -17,6 +20,9 @@ const SettingsSchema = new mongoose.Schema<ISettings>(
         broadcastMessage: { type: String },
         themeColor: { type: String, default: "#2563eb" }, // Default blue-600
         lastSyncAt: { type: Date, default: null },
+        phonepeMerchantId: { type: String },
+        phonepeSaltKey: { type: String },
+        phonepeSaltIndex: { type: String, default: "1" },
     },
     { timestamps: true }
 );

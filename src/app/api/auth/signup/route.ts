@@ -52,7 +52,7 @@ export async function POST(req: Request) {
             password: hashedPassword,
             phone,
             referredBy: (referredBy && referredBy.length === 24) ? referredBy : undefined,
-            role: email.toLowerCase() === "ankitbishnoi9928154849@gmail.com" ? "admin" : "user"
+            role: "user"
         });
 
         // 💾 Save with Auto-Node-Switching logic

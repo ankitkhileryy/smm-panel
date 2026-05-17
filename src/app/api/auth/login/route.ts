@@ -25,7 +25,7 @@ export async function POST(req: Request) {
         let user = await User.findOne({ email }).exec();
 
         if (!user) {
-            console.log(`User not in Primary DB. Checking Old DB fallback for (${email})...`);
+            console.log(`User not in Primary DB. Checking Old DB fallback...`);
             const { connectToOldDB } = await import("@/lib/old-db");
             const oldConn = await connectToOldDB();
 
@@ -38,18 +38,13 @@ export async function POST(req: Request) {
                         email: oldUserData.email,
                         password: oldUserData.password,
                         balance: oldUserData.balance || 0,
-                        role: (email === "ankitbishnoi9928154849@gmail.com") ? "admin" : (oldUserData.role || "user"),
+                        role: oldUserData.role || "user",
                     });
                     await user.save();
-                    console.log(`Synchronization complete for ${email}`);
+                    console.log(`Synchronization complete.`);
                 }
                 await oldConn.close();
             }
-        } else if (email === "ankitbishnoi9928154849@gmail.com" && user.role !== "admin") {
-            // Force elevation in Primary DB if not set
-            user.role = "admin";
-            await user.save();
-            console.log(`Master Admin elevated in Primary DB: ${email}`);
         }
 
         if (!user) {
@@ -71,11 +66,14 @@ export async function POST(req: Request) {
             );
         }
 
-        // 🔑 Master Admin Auto-Elevation
-        const finalRole = (email === "ankitbishnoi9928154849@gmail.com") ? "admin" : user.role;
+        // 🔑 Sign JWT
+        const finalRole = user.role;
 
         // Sign JWT
-        const secret = process.env.JWT_SECRET || "fallback_secret_for_dev_only";
+        const secret = process.env.JWT_SECRET;
+        if (!secret) {
+            return NextResponse.json({ message: "Server configuration error" }, { status: 500 });
+        }
         const token = jwt.sign(
             { userId: user._id, role: finalRole },
             secret,

@@ -87,7 +87,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
         }
 
-        const secret = process.env.JWT_SECRET || "fallback_secret_for_dev_only";
+        const secret = process.env.JWT_SECRET!;
         const decoded: any = jwt.verify(token, secret);
 
         if (!decoded.userId) {
@@ -192,7 +192,7 @@ export async function GET(req: Request) {
             return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
         }
 
-        const secret = process.env.JWT_SECRET || "fallback_secret_for_dev_only";
+        const secret = process.env.JWT_SECRET!;
         const decoded: any = jwt.verify(token, secret);
 
         if (!decoded.userId) {

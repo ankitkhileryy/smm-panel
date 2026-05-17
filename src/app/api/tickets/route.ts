@@ -3,7 +3,7 @@ import dbConnect from "@/lib/mongoose";
 import Ticket from "@/models/Ticket";
 import jwt from "jsonwebtoken";
 
-const secret = process.env.JWT_SECRET || "fallback_secret_for_dev_only";
+const secret = process.env.JWT_SECRET!;
 
 // 🔍 GET ALL TICKETS FOR LOGGED IN USER
 export async function GET(req: Request) {

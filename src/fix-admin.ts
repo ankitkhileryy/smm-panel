@@ -1,24 +1,27 @@
-import mongoose from 'mongoose';
+// This script is for local admin setup only.
+// Run manually with your own credentials from .env.local
+// Usage: Set MONGODB_URI and ADMIN_EMAIL in .env.local, then run this script.
 
-const uri = "mongodb+srv://ankitbishnoi9928154849_db_user:FNuP7OPpAKwhVh2m@smmdb.unmdd85.mongodb.net/smmdb?appName=smmdb";
+import mongoose from 'mongoose';
+import * as dotenv from 'dotenv';
+dotenv.config({ path: '.env.local' });
 
 async function fixAdmin() {
-    try {
-        console.log("Connecting to DB...");
-        await mongoose.connect(uri);
-        console.log("Connected.");
+    const uri = process.env.MONGODB_URI;
+    const email = process.env.ADMIN_EMAIL;
 
-        const email = "ankitbishnoi9928154849@gmail.com";
-        const result = await mongoose.connection.db.collection('users').updateOne(
+    if (!uri || !email) {
+        console.error("Set MONGODB_URI and ADMIN_EMAIL in .env.local");
+        process.exit(1);
+    }
+
+    try {
+        await mongoose.connect(uri);
+        const result = await mongoose.connection.db!.collection('users').updateOne(
             { email },
             { $set: { role: 'admin' } }
         );
-
-        console.log(`Update Result for ${email}:`, result);
-
-        const user = await mongoose.connection.db.collection('users').findOne({ email });
-        console.log("Verified User Object:", user);
-
+        console.log(`Update Result:`, result);
         process.exit(0);
     } catch (err) {
         console.error("Error:", err);

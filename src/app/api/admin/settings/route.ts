@@ -29,6 +29,9 @@ export async function POST(req: Request) {
         if (body.maintenanceMode !== undefined) updateData.maintenanceMode = body.maintenanceMode;
         if (body.broadcastMessage !== undefined) updateData.broadcastMessage = body.broadcastMessage;
         if (body.themeColor !== undefined) updateData.themeColor = body.themeColor;
+        if (body.phonepeMerchantId !== undefined) updateData.phonepeMerchantId = body.phonepeMerchantId;
+        if (body.phonepeSaltKey !== undefined) updateData.phonepeSaltKey = body.phonepeSaltKey;
+        if (body.phonepeSaltIndex !== undefined) updateData.phonepeSaltIndex = body.phonepeSaltIndex;
 
         const settings = await Settings.findOneAndUpdate(
             {},

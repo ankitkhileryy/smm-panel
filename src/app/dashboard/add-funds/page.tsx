@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import Script from "next/script";
 import { Wallet, ShieldCheck, AlertCircle, CheckCircle2, Zap, ArrowRight, RefreshCcw, CreditCard, Smartphone, Shield, Target, Activity } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
@@ -13,6 +14,61 @@ export default function AddFundsPage() {
     const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
     const [polling, setPolling] = useState(false);
 
+    const searchParams = useSearchParams();
+
+    // If redirected back with status=check, start polling
+    useEffect(() => {
+        const status = searchParams.get("status");
+        const id = searchParams.get("id");
+        if (status === "check" && id) {
+            setPolling(true);
+            setLoading(true);
+            checkStatus(id);
+        }
+    }, [searchParams]);
+
+    const checkStatus = async (id: string) => {
+        let attempts = 0;
+        const maxAttempts = 20;
+        const interval = setInterval(async () => {
+            attempts++;
+            try {
+                const res = await fetch("/api/payments/phonepe/status", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ merchantTransactionId: id }),
+                });
+                const data = await res.json();
+                
+                if (data.payment_status === "Completed") {
+                    clearInterval(interval);
+                    setMessage({ type: "success", text: "Funds added successfully!" });
+                    await refreshUser();
+                    setTimeout(() => {
+                        setPolling(false);
+                        setLoading(false);
+                        window.history.replaceState(null, '', '/dashboard/add-funds');
+                    }, 2000);
+                } else if (data.payment_status === "Failed") {
+                    clearInterval(interval);
+                    setMessage({ type: "error", text: "Payment failed. Please try again." });
+                    setTimeout(() => {
+                        setPolling(false);
+                        setLoading(false);
+                        window.history.replaceState(null, '', '/dashboard/add-funds');
+                    }, 5000);
+                } else if (attempts >= maxAttempts) {
+                    clearInterval(interval);
+                    setMessage({ type: "error", text: "Update taking longer than expected. Please check your wallet balance in a few minutes." });
+                    setPolling(false);
+                    setLoading(false);
+                }
+            } catch (err: any) {
+                console.error("Status check failed:", err);
+            }
+        }, 3000);
+    };
+
     const handlePayment = async () => {
         if (!amount || amount < 10) {
             alert("Minimum amount is ₹10");
@@ -21,20 +77,34 @@ export default function AddFundsPage() {
 
         setLoading(true);
         setMessage(null);
-        
-        // Custom UPI redirect transition
-        setTimeout(() => {
-            setLoading(false);
-            setPolling(true); 
-            
-            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                window.location.href = `upi://pay?pa=merchant@upi&pn=SMM12&am=${amount}&cu=INR&tn=AddFunds`;
+
+        try {
+            // Create PhonePe Order
+            const res = await fetch("/api/payments/phonepe/initiate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ amount }),
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || "Failed to initiate payment");
+
+            if (data.url) {
+                // Redirect user to PhonePe payment page
+                window.location.href = data.url;
+            } else {
+                throw new Error("PhonePe URL not found");
             }
-        }, 1200);
+        } catch (error: any) {
+            setMessage({ type: "error", text: error.message });
+            setLoading(false);
+        }
     };
 
     return (
         <div className="w-full space-y-8 md:space-y-12 pb-16 font-sans overflow-x-hidden px-4 md:px-0">
+            {/* PhonePe Merchant Integration */}
+            
             {/* Header Section */}
             <motion.div 
                 initial={{ opacity: 0, scale: 0.98 }}
@@ -159,23 +229,11 @@ export default function AddFundsPage() {
                                     </div>
                                 </div>
 
-                                <div className="w-full bg-[#050505] p-8 md:p-10 rounded-[32px] md:rounded-[48px] border border-white/5 shadow-inner italic">
-                                    <p className="text-[9px] font-black text-slate-900 uppercase tracking-[0.4em] md:tracking-[0.6em] mb-6 md:mb-8 leading-none italic opacity-60">Manual Direct Links</p>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 italic">
-                                        <button
-                                            onClick={() => window.location.href=`phonepe://pay?pa=merchant@upi&pn=SMM12&am=${amount}&cu=INR`} 
-                                            className="h-16 md:h-18 bg-[#5f259f] text-white rounded-xl md:rounded-2xl font-black text-[10px] md:text-[11px] uppercase tracking-[0.2em] md:tracking-[0.3em] flex items-center justify-center gap-3 md:gap-4 transition-all hover:bg-[#411874] active:scale-95 italic shadow-2xl shadow-indigo-950/30"
-                                        >
-                                            PHONEPE
-                                        </button>
-                                        <button
-                                            onClick={() => window.location.href=`gpay://upi/pay?pa=merchant@upi&pn=SMM12&am=${amount}&cu=INR`} 
-                                            className="h-16 md:h-18 bg-white text-slate-900 rounded-xl md:rounded-2xl font-black text-[10px] md:text-[11px] uppercase tracking-[0.2em] md:tracking-[0.3em] flex items-center justify-center gap-3 md:gap-4 transition-all hover:bg-slate-100 active:scale-95 italic shadow-2xl"
-                                        >
-                                            GOOGLE PAY
-                                        </button>
+                                {message && (
+                                    <div className={`w-full p-6 rounded-3xl border ${message.type === 'success' ? 'bg-emerald-500/5 border-emerald-500/20 text-emerald-500' : 'bg-red-500/5 border-red-500/20 text-red-500'} italic font-black uppercase text-xs tracking-widest`}>
+                                        {message.text}
                                     </div>
-                                </div>
+                                )}
 
                                 <button onClick={() => setPolling(false)} className="text-[10px] md:text-[11px] text-slate-900 hover:text-[#b91c1c] font-black uppercase tracking-[0.3em] md:tracking-[0.4em] transition-all italic leading-none active:scale-95">
                                     Cancel Transaction

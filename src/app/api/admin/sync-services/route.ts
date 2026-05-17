@@ -48,7 +48,7 @@ export async function POST(req: Request) {
         } catch (e) {
             console.error("Parse Error. Response was:", responseText.substring(0, 300));
             if (responseText.includes("Cloudflare") || responseText.includes("<title>")) {
-                return NextResponse.json({ message: `SMM Provider's Cloudflare is blocking your AWS Server IP. Please ask mysmmapi.com support to whitelist your Server IP: 35.154.100.213` }, { status: 500 });
+                return NextResponse.json({ message: `SMM Provider's Cloudflare is blocking the server IP. Please contact mysmmapi.com support to whitelist your server IP.` }, { status: 500 });
             }
             return NextResponse.json({ message: "Invalid JSON from provider" }, { status: 500 });
         }

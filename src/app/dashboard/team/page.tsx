@@ -37,7 +37,7 @@ export default function TeamPage() {
                         </div>
 
                         <div className="space-y-2 md:space-y-3 italic leading-none">
-                            <h3 className="text-3xl md:text-4xl font-black text-white uppercase tracking-tighter italic leading-none">Ankit Bishnoi</h3>
+                            <h3 className="text-3xl md:text-4xl font-black text-white uppercase tracking-tighter italic leading-none">Founder</h3>
                             <p className="text-[10px] font-black text-[#b91c1c] uppercase tracking-[0.3em] md:tracking-[0.5em] italic mb-1 leading-none">Founder & Lead Engineer</p>
                         </div>
 

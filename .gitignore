@@ -30,8 +30,11 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env files — never commit secrets
 .env*
+.env.local
+.env.production
+.env.development
 
 # vercel
 .vercel
@@ -39,3 +42,24 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# deployment & server config — private
+deploy.ps1
+deploy2.ps1
+deploy_log.txt
+.deployment_info.md
+nginx-smm.conf
+local_services.json
+check-services.ts
+replace.js
+src/fix-admin.ts
+
+# local utility scripts
+tmp/
+
+# SSH keys
+*.pem
+smm-aws.pem
+
+# personal files
+Daniel_Gallego.jpg

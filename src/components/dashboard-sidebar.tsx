@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
     LayoutDashboard,
     ListFilter,
+    ClipboardList,
     History,
     Wallet,
     Menu,
@@ -33,8 +34,10 @@ const navGroups = [
         title: "MAIN MENU",
         items: [
             { name: "New Order", href: "/dashboard", icon: LayoutDashboard },
+            { name: "Mass Order", href: "/dashboard/mass-order", icon: ClipboardList },
             { name: "Order History", href: "/dashboard/history", icon: History },
             { name: "Add Funds", href: "/dashboard/add-funds", icon: Wallet },
+            { name: "Funding History", href: "/dashboard/add-funds/history", icon: CreditCard },
             { name: "Services", href: "/dashboard/services", icon: ListFilter },
             { name: "Admin Panel", href: "/dashboard/admin", icon: ShieldAlert, adminOnly: true },
         ]

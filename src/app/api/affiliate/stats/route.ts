@@ -4,7 +4,7 @@ import User from "@/models/User";
 import AffiliateTransaction from "@/models/AffiliateTransaction";
 import jwt from "jsonwebtoken";
 
-const secret = process.env.JWT_SECRET || "fallback_secret_for_dev_only";
+const secret = process.env.JWT_SECRET!;
 
 export async function GET(req: Request) {
     try {

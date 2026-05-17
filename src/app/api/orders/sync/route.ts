@@ -13,7 +13,7 @@ export async function POST(req: Request) {
         const token = cookieHeader?.split("auth_token=")[1]?.split(";")[0];
         if (!token) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
-        const secret = process.env.JWT_SECRET || "fallback_secret_for_dev_only";
+        const secret = process.env.JWT_SECRET!;
         const decoded: any = jwt.verify(token, secret);
         if (!decoded.userId) return NextResponse.json({ message: "Invalid session" }, { status: 401 });
 
